@@ -1,0 +1,241 @@
+Objective
+
+The objective of this task was to:
+
+Create a secure and efficient relational database
+Store candidate and interview information properly
+Maintain monitoring logs during interviews
+Save AI-generated risk scores and evaluations
+Support future scalability and analytics
+Scope of Work
+
+The work focused on:
+
+Database schema design
+Relational table creation
+Primary and foreign key implementation
+SQL query development
+Data modeling and relationships
+Database normalization
+Testing table relationships and constraints
+4. Technologies Used
+Technology	Purpose
+MySQL	Relational database management
+PostgreSQL Concepts	Database design principles
+SQL	Query language for database operations
+MySQL Workbench	Database development and testing
+ER Diagram Design	Relationship modeling
+Libraries and Tools
+SQL Queries
+Foreign Key Constraints
+Entity Relationship Modeling
+Database Normalization Concepts
+5. Implementation Details
+Database Design Approach
+
+The database was designed using relational database concepts. Each module of the AI Interview System was separated into individual tables to reduce redundancy and improve maintainability.
+
+The implementation process included:
+
+Requirement analysis
+Identification of entities
+Table creation
+Relationship mapping
+Foreign key integration
+Constraint validation
+Testing and optimization
+5.1 Candidate Table
+
+This table stores candidate information.
+
+Column Name	Data Type	Constraints
+candidate_id	INT	PRIMARY KEY
+name	VARCHAR(100)	NOT NULL
+email	VARCHAR(100)	UNIQUE
+interview_domain	VARCHAR(100)	NOT NULL
+SQL Code
+CREATE TABLE Candidate (
+    candidate_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    interview_domain VARCHAR(100) NOT NULL
+);
+5.2 Monitoring Logs Table
+
+This table stores monitoring violations detected during interviews.
+
+Column Name	Data Type	Constraints
+log_id	INT	PRIMARY KEY
+candidate_id	INT	FOREIGN KEY
+timestamp	TIMESTAMP	DEFAULT CURRENT_TIMESTAMP
+violation_type	VARCHAR(100)	NULL
+severity	VARCHAR(50)	NULL
+SQL Code
+CREATE TABLE Monitoring_Logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    violation_type VARCHAR(100),
+    severity VARCHAR(50),
+
+
+    CONSTRAINT fk_candidate_logs
+        FOREIGN KEY(candidate_id)
+        REFERENCES Candidate(candidate_id)
+        ON DELETE CASCADE
+);
+5.3 Risk Score Table
+
+This table stores AI-generated risk analysis results.
+
+Column Name	Data Type	Constraints
+score_id	INT	PRIMARY KEY
+candidate_id	INT	FOREIGN KEY
+risk_score	DECIMAL(5,2)	NULL
+interview_status	VARCHAR(50)	NULL
+SQL Code
+CREATE TABLE Risk_Score (
+    score_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT NOT NULL,
+    risk_score DECIMAL(5,2),
+    interview_status VARCHAR(50),
+
+
+    CONSTRAINT fk_candidate_score
+        FOREIGN KEY(candidate_id)
+        REFERENCES Candidate(candidate_id)
+        ON DELETE CASCADE
+);
+5.4 Session Table
+
+This table stores interview session information.
+
+Column Name	Data Type	Constraints
+session_id	INT	PRIMARY KEY
+candidate_id	INT	FOREIGN KEY
+start_time	TIMESTAMP	NULL
+end_time	TIMESTAMP	NULL
+SQL Code
+CREATE TABLE Session (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT NOT NULL,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+
+
+    CONSTRAINT fk_candidate_session
+        FOREIGN KEY(candidate_id)
+        REFERENCES Candidate(candidate_id)
+        ON DELETE CASCADE
+);
+5.5 Transcript Table
+
+This table stores candidate interview transcripts.
+
+Column Name	Data Type	Constraints
+transcript_id	INT	PRIMARY KEY
+session_id	INT	FOREIGN KEY
+question	TEXT	NULL
+answer	TEXT	NULL
+timestamp	TIMESTAMP	DEFAULT CURRENT_TIMESTAMP
+SQL Code
+CREATE TABLE Transcripts (
+    transcript_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT NOT NULL,
+    question TEXT,
+    answer TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+
+    CONSTRAINT fk_session_transcript
+        FOREIGN KEY(session_id)
+        REFERENCES Session(session_id)
+        ON DELETE CASCADE
+);
+5.6 Evaluation Table
+
+This table stores AI-generated evaluation results.
+
+Column Name	Data Type	Constraints
+evaluation_id	INT	PRIMARY KEY
+session_id	INT	FOREIGN KEY
+communication_score	DECIMAL(5,2)	NULL
+technical_score	DECIMAL(5,2)	NULL
+confidence_score	DECIMAL(5,2)	NULL
+final_result	VARCHAR(50)	NULL
+SQL Code
+CREATE TABLE Evaluations (
+    evaluation_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT NOT NULL,
+    communication_score DECIMAL(5,2),
+    technical_score DECIMAL(5,2),
+    confidence_score DECIMAL(5,2),
+    final_result VARCHAR(50),
+
+
+    CONSTRAINT fk_session_evaluation
+        FOREIGN KEY(session_id)
+        REFERENCES Session(session_id)
+        ON DELETE CASCADE
+);
+6. Database Relationships
+
+The database follows relational design principles.
+
+Relationships
+One Candidate can have multiple Monitoring Logs.
+One Candidate can have multiple Sessions.
+One Session can contain multiple Transcripts.
+One Session can have one Evaluation record.
+Foreign keys ensure data integrity between tables.
+7. Testing & Validation
+Testing Performed
+
+The following testing methods were used:
+
+Table creation testing
+Foreign key validation
+Data insertion testing
+Query execution testing
+Relationship consistency testing
+Challenges Faced
+Foreign Key Constraint Error
+
+During implementation, an incompatibility error occurred between foreign key columns because SERIAL and INT datatypes were mixed.
+
+Solution
+
+The issue was resolved by using consistent datatypes across all related tables:
+
+INT AUTO_INCREMENT PRIMARY KEY
+
+This ensured compatibility between parent and child tables.
+
+8. Results & Outcome
+
+The database was successfully designed and implemented.
+
+Achievements
+Successfully created relational tables
+Implemented primary and foreign key constraints
+Stored candidate and session data efficiently
+Maintained secure monitoring records
+Enabled AI evaluation result storage
+Improved database consistency and scalability
+Outcome
+
+The database design supports:
+
+AI interview management
+Real-time monitoring systems
+Candidate evaluation analysis
+Transcript storage and retrieval
+Future integration with AI modules
+9. Challenges & Solutions
+Challenge	Solution
+Foreign key datatype mismatch	Used consistent INT datatype
+Table relationship errors	Added proper foreign key constraints
+Redundant data risk	Applied normalization concepts
+Query testing issues	Performed validation and debugging
+
+
